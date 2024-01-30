@@ -60,10 +60,6 @@ rl.on("line", async(line) => {
     const [ command, ...firstPath] = line.split(" ");
     if(!commands.includes(command)) throw new Error();
     
-    // const fileName = firstPath[0];
-    // const pathToSourceFile = path.join(currentPath, firstPath[0]);
-    // const pathToDestFile = path.join(currentPath, firstPath[1]);
-
     switch(command) {
       case "cd":
         if(firstPath.length === 0) throw new Error();
@@ -149,9 +145,7 @@ rl.on("line", async(line) => {
         console.log(`You are currently in ${currentPath}`);
         break;
       }
-    }
-    
-    
+    }  
   } catch {
     console.log("Invalid input");
     console.log(`You are currently in ${currentPath}`);
