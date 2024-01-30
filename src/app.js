@@ -6,8 +6,9 @@ import { cat, add, rn, cp, mv, rm } from "./commands/basicOperations.js";
 import path from "path";
 import getParsedOsInfo from "./utils/getParsedOsInfo.js";
 import getOsInfo from "./commands/getOsInfo.js";
+import calculateHashForFile from "./commands/hash.js";
 
-const commands = ["up", "ls", "cd", "cat", "add", "rn", "cp", "mv", "rm", "os"];
+const commands = ["up", "ls", "cd", "cat", "add", "rn", "cp", "mv", "rm", "os", "hash"];
 const username = process.argv.splice(2)[0].split("=")[1];
 let userHomeDirPath = os.homedir();
 // const userHomeDirectory = os.homedir();
@@ -102,8 +103,17 @@ rl.on("line", async(line) => {
       const osCommand = getParsedOsInfo(osInput);
       await getOsInfo(osCommand);
       console.log(`You are currently in ${currentPath}`);
-      
     }
+
+    if(command === "hash") {
+      if(firstPath.length !== 1) throw new Error();
+      const fileName = firstPath[0];
+      const pathToFileToHash = path.join(currentPath, fileName);
+      await calculateHashForFile(pathToFileToHash);
+      console.log(`You are currently in ${currentPath}`);
+    }
+
+
     // console.log("line: " + line);;
     // console.log("Command: " + command);
     // console.log("firstArg: " + firstPath);
