@@ -1,22 +1,37 @@
-// import { fileURLToPath } from "url";
 import os from "os";
+import path from "path";
 import readlinePromises from "node:readline/promises";
+
 import navigation from "./commands/navigation.js";
 import { cat, add, rn, cp, mv, rm } from "./commands/basicOperations.js";
-import path from "path";
 import getParsedOsInfo from "./utils/getParsedOsInfo.js";
 import getOsInfo from "./commands/getOsInfo.js";
 import calculateHashForFile from "./commands/hash.js";
+import compress from "./commands/compress.js";
+import decompress from "./commands/decompress.js";
 
-const commands = ["up", "ls", "cd", "cat", "add", "rn", "cp", "mv", "rm", "os", "hash"];
+const commands = [
+  "up",
+  "ls",
+  "cd",
+  "cat",
+  "add",
+  "rn",
+  "cp",
+  "mv",
+  "rm",
+  "os",
+  "hash",
+  "compress",
+  "decompress"
+];
 const username = process.argv.splice(2)[0].split("=")[1];
 let userHomeDirPath = os.homedir();
-// const userHomeDirectory = os.homedir();
 let currentPath = userHomeDirPath;
 
 const greetings = `Welcome to the File Manager, ${username}!`;
 const goodbye = `Thank you for using File Manager, ${username}, goodbye!`;
-// const currentPathInfo = `You are currently in ${currentPath}`;
+
 console.log(greetings);
 console.log(`You are currently in ${userHomeDirPath}`);
 
@@ -41,8 +56,10 @@ rl.on("line", async(line) => {
       console.log(goodbye);
       process.exit();
     }
+
     const [ command, ...firstPath] = line.split(" ");
     if(!commands.includes(command)) throw new Error();
+    
     if(command === "cd")  {
       if(firstPath.length === 0) throw new Error();
       currentPath = await navigation(command, currentPath, firstPath.join(" "));
@@ -113,11 +130,21 @@ rl.on("line", async(line) => {
       console.log(`You are currently in ${currentPath}`);
     }
 
+    if(command === "compress")  {
+      if(firstPath.length !== 2) throw new Error();
+      const pathToSourceFile = path.join(currentPath, firstPath[0]);
+      const pathToDestFile = path.join(currentPath, firstPath[1]);
+      await compress(pathToSourceFile, pathToDestFile);
+      console.log(`You are currently in ${currentPath}`);
+    }
 
-    // console.log("line: " + line);;
-    // console.log("Command: " + command);
-    // console.log("firstArg: " + firstPath);
-    // console.log("SecondArg: " + secondPath); 
+    if(command === "decompress")  {
+      if(firstPath.length !== 2) throw new Error();
+      const pathToSourceFile = path.join(currentPath, firstPath[0]);
+      const pathToDestFile = path.join(currentPath, firstPath[1]);
+      await decompress(pathToSourceFile, pathToDestFile);
+      console.log(`You are currently in ${currentPath}`);
+    }
 
   } catch {
     console.log("Invalid input");
