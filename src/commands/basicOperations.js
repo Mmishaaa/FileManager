@@ -23,15 +23,7 @@ const add = async(pathToNewFile) => {
   }
 };
 
-const rm = async(pathToFileToDelete) => {
-  try{
-    if(await checkPathExists(pathToFileToDelete) === false) throw new Error();
-    await fsPromise.unlink(pathToFileToDelete);
-    console.log("Successfully removed!");
-  } catch {
-    console.log("Operation failed");
-  }
-};
+
 
 const rn = async(pathToFile, currentFileName, newFileName) => {
   try{
@@ -70,5 +62,14 @@ const mv = async(pathToSourceFile, pathToDestFile) => {
   }
 }
 
+const rm = async(pathToFileToDelete) => {
+  try{
+    if(await checkPathExists(pathToFileToDelete) === false) throw new Error();
+    await fsPromise.unlink(pathToFileToDelete);
+    console.log("Successfully removed!");
+  } catch {
+    console.log("Operation failed");
+  }
+};
 
 export { cat, add, rn, cp, mv, rm };

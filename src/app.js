@@ -60,92 +60,98 @@ rl.on("line", async(line) => {
     const [ command, ...firstPath] = line.split(" ");
     if(!commands.includes(command)) throw new Error();
     
-    if(command === "cd")  {
-      if(firstPath.length === 0) throw new Error();
-      currentPath = await navigation(command, currentPath, firstPath.join(" "));
-      console.log(`You are currently in ${currentPath}`);
-    }
+    // const fileName = firstPath[0];
+    // const pathToSourceFile = path.join(currentPath, firstPath[0]);
+    // const pathToDestFile = path.join(currentPath, firstPath[1]);
 
-    if(command === "cat")  {
-      if(firstPath.length !== 1) throw new Error();
-      const fileName = firstPath[0];
-      const pathToRead = path.join(currentPath, fileName);
-      await cat(pathToRead);
-      console.log(`You are currently in ${currentPath}`);
+    switch(command) {
+      case "cd":
+        if(firstPath.length === 0) throw new Error();
+        currentPath = await navigation(command, currentPath, firstPath.join(" "));
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      case "cat": {
+        if(firstPath.length !== 1) throw new Error();
+        const fileName = firstPath[0];
+        const pathToRead = path.join(currentPath, fileName);
+        await cat(pathToRead);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      }
+      case "add": {
+        if(firstPath.length !== 1) throw new Error();
+        const fileName = firstPath[0];
+        const pathToNewFile = path.join(currentPath, fileName);
+        await add(pathToNewFile);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      }
+      case "rn": 
+        if(firstPath.length !== 2) throw new Error();
+        const currentFileName = firstPath[0];
+        const newFileName = firstPath[1];
+        await rn(currentPath, currentFileName, newFileName);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      case "cp": {
+        if(firstPath.length !== 2) throw new Error();
+        const pathToSourceFile = path.join(currentPath, firstPath[0]);
+        const pathToDestFile = path.join(currentPath, firstPath[1]);
+        await cp(pathToSourceFile, pathToDestFile);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      }
+      case "mv": 
+      {
+        if(firstPath.length !== 2) throw new Error();
+        const pathToSourceFile = path.join(currentPath, firstPath[0]);
+        const pathToDestFile = path.join(currentPath, firstPath[1]);
+        await mv(pathToSourceFile, pathToDestFile);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      }
+      case "rm": {
+        if(firstPath.length !== 1) throw new Error();
+        const fileName = firstPath[0];
+        const pathToFileToRemove = path.join(currentPath, fileName);
+        await rm(pathToFileToRemove);
+        console.log(`You are currently in ${currentPath}`);
+        break
+      }
+      case "os": 
+        if(firstPath.length !== 1) throw new Error();
+        const osInput = firstPath[0];
+        const osCommand = getParsedOsInfo(osInput);
+        await getOsInfo(osCommand);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      case "hash": {
+        if(firstPath.length !== 1) throw new Error();
+        const fileName = firstPath[0];
+        const pathToFileToHash = path.join(currentPath, fileName);
+        await calculateHashForFile(pathToFileToHash);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      }
+      case "compress": {
+        if(firstPath.length !== 2) throw new Error();
+        const pathToSourceFile = path.join(currentPath, firstPath[0]);
+        const pathToDestFile = path.join(currentPath, firstPath[1]);
+        await compress(pathToSourceFile, pathToDestFile);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      }
+      case "decompress": {
+        if(firstPath.length !== 2) throw new Error();
+        const pathToSourceFile = path.join(currentPath, firstPath[0]);
+        const pathToDestFile = path.join(currentPath, firstPath[1]);
+        await decompress(pathToSourceFile, pathToDestFile);
+        console.log(`You are currently in ${currentPath}`);
+        break;
+      }
     }
-
-    if(command === "add")  {
-      if(firstPath.length !== 1) throw new Error();
-      const fileName = firstPath[0];
-      const pathToNewFile = path.join(currentPath, fileName);
-      await add(pathToNewFile);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "rn")  {
-      if(firstPath.length !== 2) throw new Error();
-      const currentFileName = firstPath[0];
-      const newFileName = firstPath[1];
-      await rn(currentPath, currentFileName, newFileName);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "cp")  {
-      if(firstPath.length !== 2) throw new Error();
-      const pathToSourceFile = path.join(currentPath, firstPath[0]);
-      const pathToDestFile = path.join(currentPath, firstPath[1]);
-      await cp(pathToSourceFile, pathToDestFile);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "mv")  {
-      if(firstPath.length !== 2) throw new Error();
-      const pathToSourceFile = path.join(currentPath, firstPath[0]);
-      const pathToDestFile = path.join(currentPath, firstPath[1]);
-      await mv(pathToSourceFile, pathToDestFile);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "rm")  {
-      if(firstPath.length !== 1) throw new Error();
-      const fileName = firstPath[0];
-      const pathToFileToRemove = path.join(currentPath, fileName);
-      await rm(pathToFileToRemove);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "os") {
-      if(firstPath.length !== 1) throw new Error();
-      const osInput = firstPath[0];
-      const osCommand = getParsedOsInfo(osInput);
-      await getOsInfo(osCommand);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "hash") {
-      if(firstPath.length !== 1) throw new Error();
-      const fileName = firstPath[0];
-      const pathToFileToHash = path.join(currentPath, fileName);
-      await calculateHashForFile(pathToFileToHash);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "compress")  {
-      if(firstPath.length !== 2) throw new Error();
-      const pathToSourceFile = path.join(currentPath, firstPath[0]);
-      const pathToDestFile = path.join(currentPath, firstPath[1]);
-      await compress(pathToSourceFile, pathToDestFile);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
-    if(command === "decompress")  {
-      if(firstPath.length !== 2) throw new Error();
-      const pathToSourceFile = path.join(currentPath, firstPath[0]);
-      const pathToDestFile = path.join(currentPath, firstPath[1]);
-      await decompress(pathToSourceFile, pathToDestFile);
-      console.log(`You are currently in ${currentPath}`);
-    }
-
+    
+    
   } catch {
     console.log("Invalid input");
     console.log(`You are currently in ${currentPath}`);
