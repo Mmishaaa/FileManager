@@ -4,7 +4,8 @@ import readlinePromises from "node:readline/promises";
 import navigation from "./commands/navigation.js";
 import { cat, add, rn, cp, mv, rm } from "./commands/basicOperations.js";
 import path from "path";
-import GetParsedOsInfo from "./utils/GetParsedOsInfo.js";
+import getParsedOsInfo from "./utils/getParsedOsInfo.js";
+import getOsInfo from "./commands/getOsInfo.js";
 
 const commands = ["up", "ls", "cd", "cat", "add", "rn", "cp", "mv", "rm", "os"];
 const username = process.argv.splice(2)[0].split("=")[1];
@@ -97,7 +98,10 @@ rl.on("line", async(line) => {
 
     if(command === "os") {
       if(firstPath.length !== 1) throw new Error();
-      const osInfo = GetParsedOsInfo(firstPath[0]);
+      const osInput = firstPath[0];
+      const osCommand = getParsedOsInfo(osInput);
+      await getOsInfo(osCommand);
+      console.log(`You are currently in ${currentPath}`);
       
     }
     // console.log("line: " + line);;
